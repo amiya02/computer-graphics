@@ -1,0 +1,93 @@
+#include<bits/stdc++.h>
+#include<conio.h>
+#include<graphics.h>
+#define getch() _getch()
+using namespace std;
+static int LEFT=1,RIGHT=2,BOTTOM=4,TOP=8,xl,yl,xh,yh;
+int getcode(int x,int y){
+    int code=0;
+    if(y>yh) code|=TOP;
+    if(y<yl) code|=BOTTOM;
+    if(x<xl) code|=LEFT;
+    if(x>xh) code|=RIGHT;
+
+    return code;
+}
+int main(){
+    int gd=DETECT,gm;
+    initgraph(&gd,&gm,(char*)"");
+
+    setcolor(BLUE);
+    cout<<"enter the bottom left and top right points";
+    cin>>xl>>yl>>xh>>yh;
+    rectangle(xl,yl,xh,yh);
+    int x1,y1,x2,y2;
+    cout<<"enter the endpoints of a line";
+    cin>>x1>>y1>>x2>>y2;
+    line(x1,y1,x2,y2);
+    _getch();
+
+    int outcode1=getcode(x1,y1);
+    int outcode2=getcode(x2,y2);
+    int accept=0;
+    while(1){
+        float m=(float)(y2-y1)/(x2-x1);
+
+        if(outcode1==0 && outcode2==0){
+            accept=1;
+            break;
+        }
+        else if((outcode1 & outcode2)!=0)
+        {
+            break;
+        }
+        else{
+            int x,y,temp;
+            if(outcode1==0 ){
+                temp=outcode2;
+            }
+            else{
+                temp=outcode1;
+            }
+            if(temp &TOP){
+                x=x1+(yh-y1)/m;
+                y=yh;
+            }
+            else if(temp & BOTTOM){
+                x=x1+(yl-y1)/m;
+                y=yl;
+            }
+            else if(temp & LEFT){
+                x=xl;
+                y=y1+(xl-x1)*m;
+        
+            }
+            else if(temp & RIGHT){
+                x=xh;
+                y=y1+(xh-x1)*m;
+            }
+            if(temp==outcode1){
+                x1=x;
+                y1=y;
+                outcode1=getcode(x1,y1);
+            }
+            else{
+                x2=x;
+                y2=y;
+                outcode2=getcode(x2,y2);
+            }
+
+
+        }
+        
+    }
+
+    setcolor(YELLOW);
+    cout<<"After clipping:";
+    if(accept){
+     line(x1,y1,x2,y2);}
+_getch();
+closegraph();
+return 0;
+
+}
